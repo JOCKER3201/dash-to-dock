@@ -2450,6 +2450,8 @@ export class DockManager {
                 Main.layoutManager, 'startup-complete', () => {
                     this._signalsHandler.removeWithLabel(Labels.STARTUP_ANIMATION);
                     Main.sessionMode.hasOverview = hadOverview;
+                    if (this._settings.disableOverviewOnStartup)
+                        Main.overview.hide();
                     this._runStartupAnimation();
                 });
         }
