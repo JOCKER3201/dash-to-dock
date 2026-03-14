@@ -2450,8 +2450,14 @@ export class DockManager {
                 Main.layoutManager, 'startup-complete', () => {
                     this._signalsHandler.removeWithLabel(Labels.STARTUP_ANIMATION);
                     Main.sessionMode.hasOverview = hadOverview;
-                    if (this._settings.disableOverviewOnStartup)
-                        Main.overview.hide();
+                    if (this._settings.disableOverviewOnStartup) {
+                        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+                            Main.overview.hide();
+                            if (Main.overview.visible)
+                                Main.overview.close();
+                            return GLib.SOURCE_REMOVE;
+                        });
+                    }
                     this._runStartupAnimation();
                 });
         }

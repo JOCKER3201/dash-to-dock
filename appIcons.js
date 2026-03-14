@@ -1396,6 +1396,48 @@ export function getInterestingWindows(windows, monitorIndex) {
  *
  */
 
+export const DockOverviewIcon = GObject.registerClass({
+    Signals: {
+        'sync-tooltip': {},
+    },
+}, class DockOverviewIcon extends Dash.ShowAppsIcon {
+    _init(position) {
+        super._init();
+
+        this.toggleButton.connect('clicked', () => {
+            if (Main.overview.visible)
+                Main.overview.hide();
+            else
+                Main.overview.show();
+        });
+
+        this.reactive = true;
+        this.label?.add_style_class_name(Theming.PositionStyleClass[position]);
+        if (Docking.DockManager.settings.customThemeShrink)
+            this.label?.add_style_class_name('shrink');
+
+        this._labelText = _('Activities');
+    }
+
+    _createIcon(size) {
+        this._iconActor = new St.Icon({
+            icon_name: 'start-here-symbolic',
+            icon_size: size,
+            style_class: 'show-apps-icon',
+        });
+        return this._iconActor;
+    }
+
+    vfunc_leave_event(...args) {
+        return AppDisplay.AppIcon.prototype.vfunc_leave_event.call(
+            this.toggleButton, ...args);
+    }
+
+    showLabel(...args) {
+        itemShowLabel.call(this, ...args);
+    }
+});
+
 export const DockShowAppsIcon = GObject.registerClass({
     Signals: {
         'menu-state-changed': {param_types: [GObject.TYPE_BOOLEAN]},

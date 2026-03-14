@@ -1075,6 +1075,7 @@
                     </child>
                     <child>
                       <object class="GtkListBoxRow" id="listboxrow17">
+
                         <property name="child">
                           <object class="GtkGrid" id="shrink_dash3">
                             <property name="can_focus">0</property>

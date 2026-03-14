@@ -215,6 +215,20 @@ export const DockDash = GObject.registerClass({
         this._showAppsIcon.connect('menu-state-changed', (_icon, opened) => {
             this._itemMenuStateChanged(this._showAppsIcon, opened);
         });
+
+        this._overviewIcon = new AppIcons.DockOverviewIcon(this._position);
+        this._overviewIcon.show(false);
+        this._overviewIcon.icon.setIconSize(this.iconSize);
+        this._overviewIcon.x_expand = false;
+        this._overviewIcon.y_expand = false;
+        this._overviewIcon.toggleButton.connect('notify::hover', a => {
+            if (this._overviewIcon.get_parent() === this._boxContainer)
+                this._ensureItemVisibility(a);
+        });
+        if (!this._isHorizontal)
+            this._overviewIcon.y_align = Clutter.ActorAlign.START;
+        this._hookUpLabel(this._overviewIcon);
+
         this.updateShowAppsButton();
 
         this._background = new St.Widget({
@@ -701,6 +715,9 @@ export const DockDash = GObject.registerClass({
         this.iconSize = newIconSize;
         this.emit('icon-size-changed');
 
+        this._showAppsIcon.icon.setIconSize(this.iconSize);
+        this._overviewIcon.icon.setIconSize(this.iconSize);
+
         const scale = oldIconSize / newIconSize;
         for (let i = 0; i < iconChildren.length; i++) {
             const {icon} = iconChildren[i].child._delegate;
@@ -1081,16 +1098,26 @@ export const DockDash = GObject.registerClass({
 
         if (this._showAppsIcon.get_parent() !== showAppsContainer) {
             this._showAppsIcon.get_parent()?.remove_child(this._showAppsIcon);
+            this._overviewIcon.get_parent()?.remove_child(this._overviewIcon);
 
-            if (Docking.DockManager.settings.showAppsAtTop)
+            if (Docking.DockManager.settings.showAppsAtTop) {
                 showAppsContainer.insert_child_below(this._showAppsIcon, null);
-            else
+                showAppsContainer.insert_child_above(this._overviewIcon, this._showAppsIcon);
+            } else {
                 showAppsContainer.insert_child_above(this._showAppsIcon, null);
+                showAppsContainer.insert_child_below(this._overviewIcon, this._showAppsIcon);
+            }
         } else if (settings.showAppsAtTop) {
             showAppsContainer.set_child_below_sibling(this._showAppsIcon, null);
+            showAppsContainer.set_child_above_sibling(this._overviewIcon, this._showAppsIcon);
         } else {
             showAppsContainer.set_child_above_sibling(this._showAppsIcon, null);
+            showAppsContainer.set_child_below_sibling(this._overviewIcon, this._showAppsIcon);
         }
+
+        this._overviewIcon.visible = this._showAppsIcon.visible;
+        if (this._overviewIcon.visible)
+            this._overviewIcon.show(true);
 
         this._signalsHandler.removeWithLabel(Labels.FIRST_LAST_CHILD_WORKAROUND);
 
