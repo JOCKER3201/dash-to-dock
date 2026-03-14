@@ -144,8 +144,7 @@ export const DockDash = GObject.registerClass({
         this._signalsHandler = new Utils.GlobalSignalsHandler(this);
 
         this._separator = null;
-
-        this._monitorIndex = monitorIndex;
+        this._systemSeparator = null;
         this._position = Utils.getPosition();
         this._isHorizontal = (this._position === St.Side.TOP) ||
                                (this._position === St.Side.BOTTOM);
@@ -758,6 +757,18 @@ export const DockDash = GObject.registerClass({
                 mode: Clutter.AnimationMode.EASE_OUT_QUAD,
             });
         }
+
+        if (this._systemSeparator) {
+            if (this._isHorizontal) {
+                this._systemSeparator.set_width(-1);
+                this._systemSeparator.set_height(this.iconSize);
+            } else {
+                this._systemSeparator.set_width(this.iconSize);
+                this._systemSeparator.set_height(-1);
+            }
+        }
+
+        this._updateSystemSeparator();
     }
 
     _redisplay() {
@@ -970,6 +981,8 @@ export const DockDash = GObject.registerClass({
             this._separator = null;
         }
 
+        this._updateSystemSeparator();
+
         this._adjustIconSize();
 
         // Skip animations on first run when adding the initial set
@@ -1083,6 +1096,44 @@ export const DockDash = GObject.registerClass({
         this._queueRedisplay();
     }
 
+    _updateSystemSeparator() {
+        const {settings} = Docking.DockManager;
+        const showSeparator = settings.showShowAppsButton;
+
+        if (showSeparator) {
+            if (!this._systemSeparator) {
+                this._systemSeparator = new St.Widget({
+                    style_class: 'dash-separator',
+                    x_align: this._isHorizontal
+                        ? Clutter.ActorAlign.FILL : Clutter.ActorAlign.CENTER,
+                    y_align: this._isHorizontal
+                        ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.FILL,
+                    width: this._isHorizontal ? -1 : this.iconSize,
+                    height: this._isHorizontal ? this.iconSize : -1,
+                });
+            }
+
+            const isAtTop = settings.showAppsAtTop;
+            const container = this._showAppsIcon.get_parent();
+
+            if (container) {
+                this._systemSeparator.get_parent()?.remove_child(this._systemSeparator);
+                if (isAtTop) {
+                    // Place it after both icons: ShowApps and Overview
+                    container.insert_child_above(this._systemSeparator, this._overviewIcon);
+                } else {
+                    // Place it before both icons
+                    container.insert_child_below(this._systemSeparator, this._overviewIcon);
+                }
+
+                this._systemSeparator.show();
+            }
+        } else if (this._systemSeparator) {
+            this._systemSeparator.destroy();
+            this._systemSeparator = null;
+        }
+    }
+
     updateShowAppsButton() {
         if (this._showAppsIcon.get_parent() && !this._showAppsIcon.visible)
             return;
@@ -1118,6 +1169,8 @@ export const DockDash = GObject.registerClass({
         this._overviewIcon.visible = this._showAppsIcon.visible;
         if (this._overviewIcon.visible)
             this._overviewIcon.show(true);
+
+        this._updateSystemSeparator(showAppsContainer);
 
         this._signalsHandler.removeWithLabel(Labels.FIRST_LAST_CHILD_WORKAROUND);
 
