@@ -1690,6 +1690,28 @@ export class DockManager {
         this._extension = extension;
         this._signalsHandler = new Utils.GlobalSignalsHandler(this);
         this._methodInjections = new Utils.InjectionsHandler(this);
+
+        // Force minimize animation for all windows, including maximized ones
+        this._methodInjections.add([
+            Main.wm, '_minimizeWindow',
+            function (originalFunction, shellwm, actor) {
+                const isMonitorSized = actor.meta_window.is_monitor_sized;
+                actor.meta_window.is_monitor_sized = () => false;
+                const result = originalFunction.call(this, shellwm, actor);
+                actor.meta_window.is_monitor_sized = isMonitorSized;
+                return result;
+            }
+        ], [
+            Main.wm, '_unminimizeWindow',
+            function (originalFunction, shellwm, actor) {
+                const isMonitorSized = actor.meta_window.is_monitor_sized;
+                actor.meta_window.is_monitor_sized = () => false;
+                const result = originalFunction.call(this, shellwm, actor);
+                actor.meta_window.is_monitor_sized = isMonitorSized;
+                return result;
+            }
+        ]);
+
         this._vfuncInjections = new Utils.VFuncInjectionsHandler(this);
         this._propertyInjections = new Utils.PropertyInjectionsHandler(this);
         this._settings = this._extension.getSettings(
@@ -2453,8 +2475,6 @@ export class DockManager {
                     if (this._settings.disableOverviewOnStartup) {
                         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
                             Main.overview.hide();
-                            if (Main.overview.visible)
-                                Main.overview.close();
                             return GLib.SOURCE_REMOVE;
                         });
                     }

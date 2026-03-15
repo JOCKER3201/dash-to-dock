@@ -410,10 +410,14 @@ const DockAbstractAppIcon = GObject.registerClass({
         if (!this.get_stage())
             return;
 
-        const rect = new Mtk.Rectangle();
-
-        [rect.x, rect.y] = this.get_transformed_position();
-        [rect.width, rect.height] = this.get_transformed_size();
+        const [x, y] = this.get_transformed_position();
+        const [width, height] = this.get_transformed_size();
+        const rect = new Mtk.Rectangle({
+            x: Math.round(x),
+            y: Math.round(y),
+            width: Math.round(width),
+            height: Math.round(height),
+        });
 
         let windows = this.getWindows();
         if (Docking.DockManager.settings.multiMonitor) {
