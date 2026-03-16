@@ -19,6 +19,7 @@ import {
     PointerWatcher,
     Workspace,
     WorkspacesView,
+    WorkspaceThumbnail,
     WorkspaceSwitcherPopup,
 } from './dependencies/shell/ui.js';
 
@@ -1726,6 +1727,7 @@ export class DockManager {
         this._discreteGpuAvailable = AppDisplay.discreteGpuAvailable;
         this._appSpread = new AppSpread.AppSpread();
         this._notificationsMonitor = new NotificationsMonitor.NotificationsMonitor();
+        this._syncingShowAppsButton = false;
 
         const needsRemoteModel = () =>
             !this._notificationsMonitor.dndMode && this._settings.showIconsEmblems;
@@ -2239,15 +2241,17 @@ export class DockManager {
             // ensure that an undefined value will be converted into a valid one
             spacing = spacing ?? 0;
 
-            if (state === OverviewControls.ControlsState.WINDOW_PICKER) {
-                const searchBox = this.overviewControls._searchEntry.get_allocation_box();
-                const {shouldShow: wsThumbnails} = this.overviewControls._thumbnailsBox;
-
-                if (!wsThumbnails) {
-                    box.y1 += spacing;
-                    box.y2 -= spacing;
+            if (state === OverviewControls.ControlsState.WINDOW_PICKER || state === OverviewControls.ControlsState.APP_GRID) {
+                if (this.overviewControls._thumbnailsBox) {
+                    this.overviewControls._thumbnailsBox.hide();
+                    this.overviewControls._thumbnailsBox.set_width(0);
+                    this.overviewControls._thumbnailsBox.set_height(0);
                 }
 
+                const searchBox = this.overviewControls._searchEntry.get_allocation_box();
+
+                box.y1 += spacing;
+                box.y2 -= spacing;
                 box.y2 -= searchBox.get_height() + 2 * spacing;
             }
 
@@ -2364,6 +2368,7 @@ export class DockManager {
 
                 const box = workspaceBoxOriginFixer.call(this, originalFunction, state, ...args);
                 const dock = DockManager.getDefault().getDockByMonitor(this._monitorIndex);
+                
                 if (!dock)
                     return box;
                 if (state === OverviewControls.ControlsState.WINDOW_PICKER &&
@@ -2375,11 +2380,42 @@ export class DockManager {
                 /* eslint-enable no-invalid-this */
             },
         ], [
+            WorkspacesView.WorkspacesView.prototype,
+            'set_state',
+            function (originalMethod, state, ...args) {
+                /* eslint-disable no-invalid-this */
+                if (this._thumbnailsBox) {
+                    this._thumbnailsBox.hide();
+                    this._thumbnailsBox.set_width(0);
+                    this._thumbnailsBox.set_height(0);
+                }
+
+                return originalMethod.call(this, state, ...args);
+                /* eslint-enable no-invalid-this */
+            },
+        ], [
             ControlsManagerLayout.prototype,
             '_getAppDisplayBoxForState',
             function (originalFunction, ...args) {
                 /* eslint-disable no-invalid-this */
                 return workspaceBoxOriginFixer.call(this, originalFunction, ...args);
+                /* eslint-enable no-invalid-this */
+            },
+        ], [
+            WorkspaceThumbnail.ThumbnailsBox.prototype,
+            'show',
+            function () {
+                /* eslint-disable no-invalid-this */
+                this.hide();
+                /* eslint-enable no-invalid-this */
+            },
+        ], [
+            WorkspaceThumbnail.ThumbnailsBox.prototype,
+            'allocate',
+            function (originalMethod, box) {
+                /* eslint-disable no-invalid-this */
+                box.set_size(0, 0);
+                originalMethod.call(this, box);
                 /* eslint-enable no-invalid-this */
             },
         ]);
@@ -2525,7 +2561,23 @@ export class DockManager {
     }
 
     _onShowAppsButtonToggled(button) {
+        if (this._syncingShowAppsButton)
+            return;
+
+        this._syncingShowAppsButton = true;
         const {checked} = button;
+
+        DockManager.allDocks.forEach(dock => {
+            if (dock.dash.showAppsButton !== button)
+                dock.dash.showAppsButton.checked = checked;
+        });
+
+        if (this._oldDash?.showAppsButton &&
+            this._oldDash.showAppsButton !== button)
+            this._oldDash.showAppsButton.checked = checked;
+
+        this._syncingShowAppsButton = false;
+
         const {overviewControls} = this;
 
         if (!Main.overview.visible) {
@@ -2535,17 +2587,12 @@ export class DockManager {
             Main.overview.hide();
             this.mainDock.dash.showAppsButton._fromDesktop = false;
         } else {
-            // TODO: I'm not sure how reliable this is, we might need to move the
-            // _onShowAppsButtonToggled logic into the extension.
             if (!checked)
                 this.mainDock.dash.showAppsButton._fromDesktop = false;
 
-
-            // Instead of "syncing" the stock button, let's call its callback directly.
             overviewControls._onShowAppsButtonToggled();
         }
 
-        // Because we "disconnected" from the search controller, we have to manage its state.
         this.searchController._setSearchActive(false);
     }
 
