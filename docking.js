@@ -955,7 +955,7 @@ const DockedDash = GObject.registerClass({
                     DockManager.settings.showDelay * 1000,
                     this._dockDwellTimeout.bind(this));
                 GLib.Source.set_name_by_id(this._dockDwellTimeoutId,
-                    '[dash-to-dock] this._dockDwellTimeout');
+                    '[super-desktop] this._dockDwellTimeout');
             }
             this._dockDwelling = true;
         } else {
@@ -1716,7 +1716,7 @@ export class DockManager {
         this._vfuncInjections = new Utils.VFuncInjectionsHandler(this);
         this._propertyInjections = new Utils.PropertyInjectionsHandler(this);
         this._settings = this._extension.getSettings(
-            'org.gnome.shell.extensions.dash-to-dock');
+            'org.gnome.shell.extensions.super-desktop');
         this._appSwitcherSettings = new Gio.Settings({schema_id: 'org.gnome.shell.app-switcher'});
         this._mapSettingsValues();
 

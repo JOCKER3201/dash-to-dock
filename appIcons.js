@@ -1597,7 +1597,7 @@ class DockShowAppsIconMenu extends DockAppIconMenu {
     _rebuildMenu() {
         this.removeAll();
 
-        this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(__('Dash to Dock')));
+        this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(__('Super Desktop')));
 
         const item = this._appendMenuItem(_('Settings'));
         item.connect('activate', () =>

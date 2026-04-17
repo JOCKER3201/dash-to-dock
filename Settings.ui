@@ -2318,7 +2318,7 @@
             <child>
               <object class="GtkLabel" id="extension_name">
                 <property name="can_focus">0</property>
-                <property name="label">&lt;b&gt;Dash to Dock&lt;/b&gt;</property>
+                <property name="label">&lt;b&gt;Super Desktop&lt;/b&gt;</property>
                 <property name="use_markup">1</property>
               </object>
             </child>

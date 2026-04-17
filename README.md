@@ -1,4 +1,4 @@
-# Dash to Dock
+# Super Desktop
 ![screenshot](https://github.com/micheleg/dash-to-dock/raw/master/media/screenshot.jpg)
 
 ## A dock for the GNOME Shell
