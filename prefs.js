@@ -745,6 +745,16 @@ const DockSettings = GObject.registerClass({
             'active',
             Gio.SettingsBindFlags.DEFAULT);
 
+        this._settings.bind('show-overview-button',
+            this._builder.get_object('show_overview_button_switch'),
+            'active',
+            Gio.SettingsBindFlags.DEFAULT);
+
+        this._settings.bind('hide-activities-button',
+            this._builder.get_object('hide_activities_button_switch'),
+            'active',
+            Gio.SettingsBindFlags.DEFAULT);
+
         this._settings.bind('show-apps-at-top',
             this._builder.get_object('application_button_first_button'),
             'active',

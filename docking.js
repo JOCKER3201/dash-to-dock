@@ -608,6 +608,10 @@ const DockedDash = GObject.registerClass({
             },
         ], [
             settings,
+            'changed::show-overview-button',
+            () => this.dash.updateShowAppsButton(),
+        ], [
+            settings,
             'changed::dock-fixed',
             () => {
                 this._untrackDock();

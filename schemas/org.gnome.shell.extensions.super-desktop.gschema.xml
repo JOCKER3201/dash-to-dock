@@ -187,7 +187,7 @@
       <description>Keep the icon size fixed by scrolling the dock.</description>
     </key>
     <key type="b" name="apply-custom-theme">
-      <default>false</default>
+      <default>true</default>
       <summary>Apply custom theme</summary>
       <description>Apply customization to the dash appearance</description>
     </key>
@@ -290,6 +290,16 @@
       <default>true</default>
       <summary>Show applications button</summary>
       <description>Show applications button in the dash</description>
+    </key>
+    <key type="b" name="show-overview-button">
+      <default>true</default>
+      <summary>Show overview button</summary>
+      <description>Show overview (Activities) button in the dash</description>
+    </key>
+    <key type="b" name="hide-activities-button">
+      <default>true</default>
+      <summary>Hide top panel Activities button</summary>
+      <description>Hide the Activities button in the top panel</description>
     </key>
     <key type="b" name="show-apps-at-top">
       <default>false</default>

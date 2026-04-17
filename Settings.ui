@@ -1185,6 +1185,80 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkListBoxRow" id="listboxrow_overview_button">
+                        <property name="child">
+                          <object class="GtkGrid" id="shrink_dash_overview">
+                            <property name="can_focus">0</property>
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">12</property>
+                            <property name="margin_top">12</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="column_spacing">32</property>
+                            <child>
+                              <object class="GtkSwitch" id="show_overview_button_switch">
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="show_overview_button_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Show &lt;i&gt;Overview&lt;/i&gt; icon in the dash</property>
+                                <property name="use_markup">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow" id="listboxrow_hide_activities">
+                        <property name="child">
+                          <object class="GtkGrid" id="shrink_dash_hide_activities">
+                            <property name="can_focus">0</property>
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">12</property>
+                            <property name="margin_top">12</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="column_spacing">32</property>
+                            <child>
+                              <object class="GtkSwitch" id="hide_activities_button_switch">
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="hide_activities_button_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Hide &lt;i&gt;Activities&lt;/i&gt; button in the top panel</property>
+                                <property name="use_markup">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkListBoxRow" id="listboxrow18">
                         <property name="child">
                           <object class="GtkGrid" id="shrink_dash4">

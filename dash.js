@@ -1167,7 +1167,8 @@ export const DockDash = GObject.registerClass({
             showAppsContainer.set_child_below_sibling(this._overviewIcon, this._showAppsIcon);
         }
 
-        this._overviewIcon.visible = this._showAppsIcon.visible;
+        this._overviewIcon.visible = this._showAppsIcon.visible &&
+            Docking.DockManager.settings.showOverviewButton;
         if (this._overviewIcon.visible)
             this._overviewIcon.show(true);
 

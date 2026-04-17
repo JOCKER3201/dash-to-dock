@@ -11,30 +11,48 @@ export default class DashToDockExtension extends Extension.Extension {
     enable() {
         dockManager = new DockManager(this);
 
-        // Hide Activities button / Workspace Indicator
+        this._settings = this.getSettings(
+            'org.gnome.shell.extensions.super-desktop');
         this._activitiesButton = Main.panel.statusArea.activities;
-        if (this._activitiesButton) {
-            this._activitiesButton.hide();
-            // Also hide the container if hide() on the button isn't enough
-            this._activitiesButton.container?.hide();
-        }
 
-        // Disable hot corner
+        this._applyActivitiesVisibility();
+        this._activitiesChangedId = this._settings.connect(
+            'changed::hide-activities-button',
+            () => this._applyActivitiesVisibility());
+
         if (Main.layoutManager.removeHotCorner)
             Main.layoutManager.removeHotCorner();
     }
 
     disable() {
+        if (this._settings && this._activitiesChangedId) {
+            this._settings.disconnect(this._activitiesChangedId);
+            this._activitiesChangedId = 0;
+        }
+        this._settings = null;
+
         if (this._activitiesButton) {
             this._activitiesButton.show();
             this._activitiesButton.container?.show();
         }
         this._activitiesButton = null;
 
-        if (this._hotCornerWasEnabled && Main.layoutManager.addHotCorner)
+        if (Main.layoutManager.addHotCorner)
             Main.layoutManager._updateHotCorners();
 
         dockManager?.destroy();
         dockManager = null;
+    }
+
+    _applyActivitiesVisibility() {
+        if (!this._activitiesButton)
+            return;
+        if (this._settings.get_boolean('hide-activities-button')) {
+            this._activitiesButton.hide();
+            this._activitiesButton.container?.hide();
+        } else {
+            this._activitiesButton.show();
+            this._activitiesButton.container?.show();
+        }
     }
 }
