@@ -1400,6 +1400,15 @@ export function getInterestingWindows(windows, monitorIndex) {
  *
  */
 
+function applyCustomIconFile(iconActor, path) {
+    if (!path)
+        return;
+    const file = Gio.File.new_for_path(path);
+    if (!file.query_exists(null))
+        return;
+    iconActor.gicon = new Gio.FileIcon({file});
+}
+
 export const DockOverviewIcon = GObject.registerClass({
     Signals: {
         'sync-tooltip': {},
@@ -1429,7 +1438,18 @@ export const DockOverviewIcon = GObject.registerClass({
             icon_size: size,
             style_class: 'show-apps-icon',
         });
+        applyCustomIconFile(this._iconActor,
+            Docking.DockManager.settings.customOverviewIconFile);
         return this._iconActor;
+    }
+
+    refreshIcon() {
+        if (!this._iconActor)
+            return;
+        this._iconActor.gicon = null;
+        this._iconActor.icon_name = 'start-here-symbolic';
+        applyCustomIconFile(this._iconActor,
+            Docking.DockManager.settings.customOverviewIconFile);
     }
 
     vfunc_leave_event(...args) {
@@ -1484,7 +1504,19 @@ export const DockShowAppsIcon = GObject.registerClass({
         this._iconActor.fallbackIconName = this._iconActor.iconName;
         this._iconActor.fallbackGicon = this._iconActor.gicon;
         this._iconActor.iconName = `view-app-grid-${Main.sessionMode.currentMode}-symbolic`;
+        applyCustomIconFile(this._iconActor,
+            Docking.DockManager.settings.customShowAppsIconFile);
         return this._iconActor;
+    }
+
+    refreshIcon() {
+        if (!this._iconActor)
+            return;
+        this._iconActor.gicon = null;
+        this._iconActor.icon_name =
+            `view-app-grid-${Main.sessionMode.currentMode}-symbolic`;
+        applyCustomIconFile(this._iconActor,
+            Docking.DockManager.settings.customShowAppsIconFile);
     }
 
     vfunc_leave_event(...args) {

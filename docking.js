@@ -612,6 +612,14 @@ const DockedDash = GObject.registerClass({
             () => this.dash.updateShowAppsButton(),
         ], [
             settings,
+            'changed::custom-show-apps-icon-file',
+            () => this.dash.refreshSystemIcons(),
+        ], [
+            settings,
+            'changed::custom-overview-icon-file',
+            () => this.dash.refreshSystemIcons(),
+        ], [
+            settings,
             'changed::dock-fixed',
             () => {
                 this._untrackDock();

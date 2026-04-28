@@ -1222,6 +1222,154 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkListBoxRow" id="listboxrow_custom_show_apps_icon">
+                        <property name="child">
+                          <object class="GtkGrid" id="custom_show_apps_icon_grid">
+                            <property name="can_focus">0</property>
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">12</property>
+                            <property name="margin_top">12</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="column_spacing">12</property>
+                            <child>
+                              <object class="GtkLabel" id="custom_show_apps_icon_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Custom &lt;i&gt;Applications&lt;/i&gt; icon</property>
+                                <property name="use_markup">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="custom_show_apps_icon_path_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="max-width-chars">40</property>
+                                <property name="label" translatable="yes">Default</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="custom_show_apps_icon_choose_button">
+                                <property name="label" translatable="yes">Choose…</property>
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <signal name="clicked" handler="custom_show_apps_icon_choose_button_clicked_cb"/>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                  <property name="row-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="custom_show_apps_icon_reset_button">
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <property name="tooltip_text" translatable="yes">Reset to default</property>
+                                <property name="icon_name">edit-clear-symbolic</property>
+                                <signal name="clicked" handler="custom_show_apps_icon_reset_button_clicked_cb"/>
+                                <style>
+                                  <class name="circular"/>
+                                </style>
+                                <layout>
+                                  <property name="column">2</property>
+                                  <property name="row">0</property>
+                                  <property name="row-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow" id="listboxrow_custom_overview_icon">
+                        <property name="child">
+                          <object class="GtkGrid" id="custom_overview_icon_grid">
+                            <property name="can_focus">0</property>
+                            <property name="margin_start">12</property>
+                            <property name="margin_end">12</property>
+                            <property name="margin_top">12</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="column_spacing">12</property>
+                            <child>
+                              <object class="GtkLabel" id="custom_overview_icon_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Custom &lt;i&gt;Overview&lt;/i&gt; icon</property>
+                                <property name="use_markup">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="custom_overview_icon_path_label">
+                                <property name="can_focus">0</property>
+                                <property name="hexpand">1</property>
+                                <property name="halign">start</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="max-width-chars">40</property>
+                                <property name="label" translatable="yes">Default</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="custom_overview_icon_choose_button">
+                                <property name="label" translatable="yes">Choose…</property>
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <signal name="clicked" handler="custom_overview_icon_choose_button_clicked_cb"/>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                  <property name="row-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="custom_overview_icon_reset_button">
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <property name="tooltip_text" translatable="yes">Reset to default</property>
+                                <property name="icon_name">edit-clear-symbolic</property>
+                                <signal name="clicked" handler="custom_overview_icon_reset_button_clicked_cb"/>
+                                <style>
+                                  <class name="circular"/>
+                                </style>
+                                <layout>
+                                  <property name="column">2</property>
+                                  <property name="row">0</property>
+                                  <property name="row-span">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkListBoxRow" id="listboxrow_hide_activities">
                         <property name="child">
                           <object class="GtkGrid" id="shrink_dash_hide_activities">

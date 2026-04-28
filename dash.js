@@ -1087,6 +1087,11 @@ export const DockDash = GObject.registerClass({
         this._showAppsIcon.visible = false;
     }
 
+    refreshSystemIcons() {
+        this._showAppsIcon?.refreshIcon?.();
+        this._overviewIcon?.refreshIcon?.();
+    }
+
     setMaxSize(maxWidth, maxHeight) {
         if (this._maxWidth === maxWidth &&
             this._maxHeight === maxHeight)

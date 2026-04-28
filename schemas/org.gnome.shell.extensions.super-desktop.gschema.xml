@@ -296,6 +296,16 @@
       <summary>Show overview button</summary>
       <description>Show overview (Activities) button in the dash</description>
     </key>
+    <key type="s" name="custom-show-apps-icon-file">
+      <default>''</default>
+      <summary>Custom Show Applications icon file</summary>
+      <description>Path to a custom image file used as the Show Applications (app grid) icon. Empty value uses the default icon.</description>
+    </key>
+    <key type="s" name="custom-overview-icon-file">
+      <default>''</default>
+      <summary>Custom Overview icon file</summary>
+      <description>Path to a custom image file used as the Overview (Activities) icon. Empty value uses the default icon.</description>
+    </key>
     <key type="b" name="hide-activities-button">
       <default>true</default>
       <summary>Hide top panel Activities button</summary>

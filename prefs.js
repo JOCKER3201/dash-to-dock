@@ -237,6 +237,58 @@ const DockSettings = GObject.registerClass({
         return this[handlerName].bind(connectObject || this);
     }
 
+    _chooseCustomIconFile(settingsKey) {
+        const dialog = new Gtk.FileDialog({
+            title: __('Choose icon image'),
+            modal: true,
+        });
+
+        const filter = new Gtk.FileFilter();
+        filter.set_name(__('Image files'));
+        filter.add_mime_type('image/png');
+        filter.add_mime_type('image/jpeg');
+        filter.add_mime_type('image/svg+xml');
+        filter.add_mime_type('image/webp');
+        filter.add_mime_type('image/x-icon');
+        const filters = new Gio.ListStore({item_type: Gtk.FileFilter});
+        filters.append(filter);
+        dialog.set_filters(filters);
+        dialog.set_default_filter(filter);
+
+        const currentPath = this._settings.get_string(settingsKey);
+        if (currentPath) {
+            const file = Gio.File.new_for_path(currentPath);
+            if (file.query_exists(null))
+                dialog.set_initial_file(file);
+        }
+
+        dialog.open(this.widget.get_root(), null, (source, result) => {
+            try {
+                const file = source.open_finish(result);
+                if (file)
+                    this._settings.set_string(settingsKey, file.get_path() ?? '');
+            } catch {
+                // User dismissed/cancelled the dialog
+            }
+        });
+    }
+
+    custom_show_apps_icon_choose_button_clicked_cb() {
+        this._chooseCustomIconFile('custom-show-apps-icon-file');
+    }
+
+    custom_show_apps_icon_reset_button_clicked_cb() {
+        this._settings.set_string('custom-show-apps-icon-file', '');
+    }
+
+    custom_overview_icon_choose_button_clicked_cb() {
+        this._chooseCustomIconFile('custom-overview-icon-file');
+    }
+
+    custom_overview_icon_reset_button_clicked_cb() {
+        this._settings.set_string('custom-overview-icon-file', '');
+    }
+
     dock_display_combo_changed_cb(combo) {
         if (!this._monitors?.length || this._updatingSettings)
             return;
@@ -749,6 +801,21 @@ const DockSettings = GObject.registerClass({
             this._builder.get_object('show_overview_button_switch'),
             'active',
             Gio.SettingsBindFlags.DEFAULT);
+
+        const updateCustomIconPathLabel = (settingsKey, labelId) => {
+            const label = this._builder.get_object(labelId);
+            const path = this._settings.get_string(settingsKey);
+            label.set_label(path || __('Default'));
+        };
+        const customIconBindings = [
+            ['custom-show-apps-icon-file', 'custom_show_apps_icon_path_label'],
+            ['custom-overview-icon-file', 'custom_overview_icon_path_label'],
+        ];
+        customIconBindings.forEach(([key, labelId]) => {
+            updateCustomIconPathLabel(key, labelId);
+            this._settings.connect(`changed::${key}`,
+                () => updateCustomIconPathLabel(key, labelId));
+        });
 
         this._settings.bind('hide-activities-button',
             this._builder.get_object('hide_activities_button_switch'),
